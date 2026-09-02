@@ -200,7 +200,7 @@ export function SignInForm({ redirectTo }: { redirectTo: string }) {
         <button
           type="button"
           onClick={() => switchMode(isRegister ? 'signin' : 'register')}
-          className="font-medium text-brand-800 underline hover:text-brand-900"
+          className="inline-flex min-h-touch items-center px-1 font-medium text-brand-800 underline hover:text-brand-900"
         >
           {isRegister ? t('signInInstead') : t('createAccount')}
         </button>

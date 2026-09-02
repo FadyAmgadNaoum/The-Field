@@ -3,6 +3,7 @@ import Image from 'next/image'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
 import { EmptyState } from '@/components/ui/feedback'
 import { Container, PageHeader, Section } from '@/components/ui/layout'
+import { CourtMotif } from '@/components/public/court-artwork'
 import { venueConfig } from '@/lib/config'
 import { toLocale } from '@/i18n/config'
 import * as cms from '@/modules/cms/cms.service'
@@ -56,7 +57,11 @@ export default async function GalleryPage({ params }: { params: { locale: string
 
         {items.length === 0 ? (
           <div className="mt-10">
-            <EmptyState title={t('empty')} description={t('emptyBody')} />
+            <EmptyState
+              title={t('empty')}
+              description={t('emptyBody')}
+              illustration={<CourtMotif />}
+            />
           </div>
         ) : (
           <ul className="mt-10 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">

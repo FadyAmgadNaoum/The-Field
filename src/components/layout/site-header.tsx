@@ -33,7 +33,7 @@ export async function SiteHeader({ venueName }: { venueName: string }) {
         */}
         <Link
           href="/"
-          className="inline-flex min-h-touch shrink-0 items-center rounded-control px-1 text-heading-sm font-semibold tracking-tight text-ink-900"
+          className="inline-flex min-h-touch shrink-0 items-center rounded-control px-1 text-heading-sm font-semibold tracking-tight text-ink-900 transition-colors duration-200 hover:text-brand-800"
         >
           {venueName}
         </Link>
@@ -44,7 +44,7 @@ export async function SiteHeader({ venueName }: { venueName: string }) {
               <li key={link.href}>
                 <Link
                   href={link.href}
-                  className="flex min-h-touch items-center rounded-control px-3 text-body-sm font-medium text-ink-700 hover:bg-ink-50 hover:text-ink-900"
+                  className="flex min-h-touch items-center rounded-control px-3 text-body-sm font-medium text-ink-700 transition-colors duration-200 hover:bg-brand-50 hover:text-brand-800"
                 >
                   {link.label}
                 </Link>

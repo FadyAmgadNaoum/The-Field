@@ -52,7 +52,23 @@
     "viewGallery": "View the gallery",
     "ctaHeading": "Ready to play?",
     "ctaBody": "Reserve a court and settle payment with the venue.",
-    "ctaButton": "Book a court"
+    "ctaButton": "Book a court",
+    "heroEyebrow": "Padel at The Field",
+    "highlightsHeading": "How booking works",
+    "highlights": {
+      "choose": {
+        "title": "Pick your court",
+        "body": "Every active court, with its features and rates published up front."
+      },
+      "reserve": {
+        "title": "Choose your time",
+        "body": "Reserve the slot you want and receive a booking reference straight away."
+      },
+      "confirm": {
+        "title": "The venue confirms",
+        "body": "The Field checks your payment and confirms the booking. You can track it any time."
+      }
+    }
   },
   "courts": {
     "title": "Courts",
@@ -62,7 +78,6 @@
     "featuresHeading": "Features",
     "bookThisCourt": "Book this court",
     "photoAlt": "Photo of {court}",
-    "noPhoto": "No photo available",
     "typeLabel": "Court type"
   },
   "pricing": {

@@ -1,11 +1,12 @@
 import Image from 'next/image'
-import { ArrowRight } from 'lucide-react'
+import { ArrowRight, CalendarCheck, LayoutGrid, ShieldCheck } from 'lucide-react'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
 import { Link } from '@/i18n/navigation'
 import { buttonStyles } from '@/components/ui/button'
 import { Alert } from '@/components/ui/feedback'
 import { Container, Section } from '@/components/ui/layout'
 import { CourtCard } from '@/components/public/court-card'
+import { HeroBackdrop } from '@/components/public/court-artwork'
 import { venueConfig } from '@/lib/config'
 import { publicUrlFor } from '@/modules/storage/storage.service'
 import { toLocale } from '@/i18n/config'
@@ -64,9 +65,15 @@ export default async function HomePage({ params }: { params: { locale: string } 
       ) : null}
 
       {/* ── Hero ─────────────────────────────────────────────────────────── */}
-      <section className="relative isolate overflow-hidden bg-brand-50">
-        {heroImageUrl ? (
-          <>
+      {/*
+        Two backdrops, one layout. A CMS hero photograph wins when the owner has
+        uploaded one; otherwise the drawn backdrop fills the same space. Either
+        way the type sits on a dark ground, so the headline's contrast does not
+        depend on which one is showing.
+      */}
+      <section className="relative isolate overflow-hidden">
+        <div aria-hidden className="absolute inset-0 -z-20">
+          {heroImageUrl ? (
             <Image
               src={heroImageUrl}
               // Decorative: the headline beside it carries the meaning, so an
@@ -76,29 +83,50 @@ export default async function HomePage({ params }: { params: { locale: string } 
               fill
               priority
               sizes="100vw"
-              className="-z-10 object-cover"
+              className="object-cover"
             />
-            <div aria-hidden className="absolute inset-0 -z-10 bg-ink-950/55" />
-          </>
-        ) : null}
+          ) : (
+            <HeroBackdrop />
+          )}
+        </div>
 
-        <Container className="py-16 sm:py-24">
+        {/*
+          Scrim. A photograph's brightness is unknown until it is uploaded, so
+          the overlay is what guarantees the 4.5:1 text contrast rather than
+          hoping the chosen image is dark enough.
+        */}
+        <div
+          aria-hidden
+          className="absolute inset-0 -z-10 bg-gradient-to-b from-ink-950/70 via-ink-950/55 to-ink-950/70"
+        />
+
+        <Container className="py-20 sm:py-28">
           <div className="max-w-prose">
-            <h1
-              className={`text-display font-semibold tracking-tight sm:text-display-lg ${
-                heroImageUrl ? 'text-white' : 'text-ink-900'
-              }`}
-            >
+            <p className="animate-fade-in text-body-sm font-semibold uppercase tracking-[0.2em] text-brand-200">
+              {t('heroEyebrow')}
+            </p>
+            <h1 className="animate-rise-in mt-4 text-display font-semibold tracking-tight text-white sm:text-display-lg">
               {hero['homepage.hero_headline'] ?? t('heroHeadline')}
             </h1>
-            <p className={`mt-4 text-body-lg ${heroImageUrl ? 'text-ink-100' : 'text-ink-700'}`}>
+            <p
+              className="animate-rise-in mt-5 text-body-lg text-ink-100"
+              // Staggering by a hair makes the block read as one movement
+              // settling rather than three things arriving at once.
+              style={{ animationDelay: '80ms' }}
+            >
               {hero['homepage.hero_subtitle'] ?? t('heroSubtitle')}
             </p>
 
-            <div className="mt-8 flex flex-wrap gap-3">
+            <div
+              className="animate-rise-in mt-9 flex flex-wrap gap-3"
+              style={{ animationDelay: '160ms' }}
+            >
               <Link href="/courts" className={buttonStyles({ size: 'lg' })}>
                 {hero['homepage.hero_cta_label'] ?? t('heroCta')}
-                <ArrowRight aria-hidden className="h-5 w-5 rtl:rotate-180" />
+                <ArrowRight
+                  aria-hidden
+                  className="h-5 w-5 transition-transform duration-300 ease-settle group-hover:translate-x-1 rtl:rotate-180"
+                />
               </Link>
               <Link href="/pricing" className={buttonStyles({ variant: 'secondary', size: 'lg' })}>
                 {t('heroSecondaryCta')}
@@ -107,6 +135,50 @@ export default async function HomePage({ params }: { params: { locale: string } 
           </div>
         </Container>
       </section>
+
+      {/* ── What the venue offers ────────────────────────────────────────── */}
+      {/*
+        Deliberately generic and verifiable: these describe how the booking
+        service works, not the facilities. Claiming "floodlit courts" or
+        "coaching available" would be inventing facts about a venue that has
+        published nothing (Doc 22 Preamble #4).
+      */}
+      <div className="border-b border-line bg-court-gradient">
+        <Container>
+          <Section aria-labelledby="home-highlights-heading" className="py-10 sm:py-12">
+            <h2 id="home-highlights-heading" className="sr-only">
+              {t('highlightsHeading')}
+            </h2>
+            <ul className="grid gap-5 sm:grid-cols-3">
+              {[
+                { key: 'choose', Icon: LayoutGrid, tone: 'bg-brand-100 text-brand-800' },
+                { key: 'reserve', Icon: CalendarCheck, tone: 'bg-court-100 text-court-800' },
+                { key: 'confirm', Icon: ShieldCheck, tone: 'bg-accent-100 text-accent-800' },
+              ].map(({ key, Icon, tone }, index) => (
+                <li
+                  key={key}
+                  className="animate-rise-in flex items-start gap-3"
+                  style={{ animationDelay: `${index * 70}ms` }}
+                >
+                  <span
+                    className={`inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-control ${tone}`}
+                  >
+                    <Icon aria-hidden className="h-5 w-5" />
+                  </span>
+                  <div className="min-w-0">
+                    <p className="text-body font-semibold text-ink-900">
+                      {t(`highlights.${key}.title` as never)}
+                    </p>
+                    <p className="mt-1 text-body-sm text-ink-600">
+                      {t(`highlights.${key}.body` as never)}
+                    </p>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </Section>
+        </Container>
+      </div>
 
       {/* ── About ────────────────────────────────────────────────────────── */}
       <Container>
@@ -154,12 +226,13 @@ export default async function HomePage({ params }: { params: { locale: string } 
 
             {previewCourts.length > 0 ? (
               <ul className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-                {previewCourts.map((court) => (
+                {previewCourts.map((court, index) => (
                   <CourtCard
                     key={court.id}
                     court={court}
                     showBookAction={false}
                     headingLevel="h3"
+                    entranceDelayMs={index * 60}
                   />
                 ))}
               </ul>
@@ -184,7 +257,7 @@ export default async function HomePage({ params }: { params: { locale: string } 
               {previewGallery.map((item) => (
                 <li
                   key={item.id}
-                  className="relative aspect-square overflow-hidden rounded-card bg-ink-100"
+                  className="relative aspect-square overflow-hidden rounded-card bg-ink-100 transition duration-300 ease-settle hover:-translate-y-1 hover:shadow-raised"
                 >
                   {item.imageUrl ? (
                     <Image
@@ -208,7 +281,7 @@ export default async function HomePage({ params }: { params: { locale: string } 
       ) : null}
 
       {/* ── Closing call to action ───────────────────────────────────────── */}
-      <div className="bg-brand-800">
+      <div className="bg-brand-gradient">
         <Container>
           <Section aria-labelledby="home-cta-heading" className="text-center">
             <h2
@@ -217,7 +290,7 @@ export default async function HomePage({ params }: { params: { locale: string } 
             >
               {t('ctaHeading')}
             </h2>
-            <p className="mx-auto mt-3 max-w-prose text-body text-brand-100">{t('ctaBody')}</p>
+            <p className="mx-auto mt-3 max-w-prose text-body text-brand-50">{t('ctaBody')}</p>
             <div className="mt-7 flex justify-center">
               <Link href="/courts" className={buttonStyles({ variant: 'secondary', size: 'lg' })}>
                 {t('ctaButton')}

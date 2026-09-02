@@ -4,6 +4,7 @@ import { Link } from '@/i18n/navigation'
 import { Badge, Card, CardBody } from '@/components/ui/card'
 import { buttonStyles } from '@/components/ui/button'
 import { BOOKING_CTA_HREF } from '@/components/layout/nav-items'
+import { PadelCourtGraphic, variantForKey } from '@/components/public/court-artwork'
 import type { PublicCourt } from '@/modules/courts/courts.service'
 
 /**
@@ -13,9 +14,14 @@ import type { PublicCourt } from '@/modules/courts/courts.service'
  * The URL arrives already resolved from the storage key by the courts service,
  * so no template ever handles an internal object key (Doc 12 §3).
  *
- * A court with no photo gets a plain tinted panel, not a broken image and not a
- * stock photograph — no production imagery has been supplied and inventing one
- * would misrepresent the venue.
+ * A court with no photo gets a drawn court diagram, not a broken image and not
+ * a stock photograph — no production imagery has been supplied, and a
+ * photograph of somebody else's club would tell the customer something untrue
+ * about the venue they are booking. The diagram is decorative and `aria-hidden`;
+ * the court's name and description carry the meaning.
+ *
+ * The colourway is derived from the court's id, so a grid of cards is varied but
+ * each card keeps the same colour between renders.
  *
  * `alt` prefers the administrator's `alt_text` (Doc 03 NFR-ACC-003 requires
  * meaningful alt text) and falls back to a translated description naming the
@@ -25,6 +31,7 @@ export async function CourtCard({
   court,
   showBookAction = true,
   headingLevel = 'h2',
+  entranceDelayMs = 0,
 }: {
   court: PublicCourt
   showBookAction?: boolean
@@ -38,6 +45,15 @@ export async function CourtCard({
    * audit flagged on `/courts` before this prop existed (Doc 03 NFR-ACC-001).
    */
   headingLevel?: 'h2' | 'h3'
+  /**
+   * Stagger for the entrance animation, in milliseconds.
+   *
+   * A grid whose cards all appear on the same frame reads as a flash; a short
+   * offset per card reads as the grid settling. Purely presentational — the
+   * animation only moves opacity and transform, so a delayed card still
+   * occupies its space from the first paint and cannot shift the layout.
+   */
+  entranceDelayMs?: number
 }) {
   const t = await getTranslations('courts')
   const cover = court.images[0]
@@ -45,8 +61,17 @@ export async function CourtCard({
   const FeatureHeading = headingLevel === 'h2' ? 'h3' : 'h4'
 
   return (
-    <Card as="li" className="flex flex-col">
-      <div className="relative aspect-[16/10] w-full bg-brand-50">
+    <Card
+      as="li"
+      style={entranceDelayMs ? { animationDelay: `${entranceDelayMs}ms` } : undefined}
+      className="group animate-rise-in flex flex-col transition duration-300 ease-settle hover:-translate-y-1 hover:shadow-raised"
+    >
+      {/*
+        `overflow-hidden` contains the image's hover zoom, and the fixed aspect
+        ratio reserves the space before anything loads — an image that resizes
+        its own container is the commonest source of layout shift.
+      */}
+      <div className="relative aspect-[16/10] w-full overflow-hidden bg-brand-50">
         {cover?.url ? (
           <Image
             src={cover.url}
@@ -55,12 +80,14 @@ export async function CourtCard({
             // Two columns from `sm`, three from `lg`; telling the browser this
             // up front avoids downloading a full-width image on a phone.
             sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-            className="object-cover"
+            className="object-cover transition-transform duration-500 ease-settle group-hover:scale-[1.04]"
           />
         ) : (
-          <div className="flex h-full w-full items-center justify-center px-4 text-center">
-            <span className="text-body-sm text-brand-800">{t('noPhoto')}</span>
-          </div>
+          <PadelCourtGraphic
+            variant={variantForKey(court.id)}
+            uid={court.id}
+            className="transition-transform duration-500 ease-settle group-hover:scale-[1.04]"
+          />
         )}
       </div>
 

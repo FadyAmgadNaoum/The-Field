@@ -76,13 +76,27 @@ export function EmptyState({
   title,
   description,
   action,
+  illustration,
 }: {
   title: string
   description?: string
   action?: React.ReactNode
+  /**
+   * Decorative artwork above the message.
+   *
+   * An empty region with nothing in it reads as a page that failed to load. A
+   * small graphic says "this is where something will go" — which is the actual
+   * situation while the venue is still being set up.
+   */
+  illustration?: React.ReactNode
 }) {
   return (
-    <div className="rounded-card border border-dashed border-ink-300 bg-subtle px-6 py-12 text-center">
+    <div className="animate-fade-in rounded-card border border-dashed border-brand-200 bg-court-gradient px-6 py-12 text-center">
+      {illustration ? (
+        <div aria-hidden className="mx-auto mb-6 w-full max-w-[14rem]">
+          {illustration}
+        </div>
+      ) : null}
       <p className="text-body-lg font-medium text-ink-800">{title}</p>
       {description ? (
         <p className="mx-auto mt-2 max-w-prose text-body-sm text-ink-600">{description}</p>

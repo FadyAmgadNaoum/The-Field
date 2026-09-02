@@ -3,6 +3,7 @@ import { getTranslations, setRequestLocale } from 'next-intl/server'
 import { Alert, EmptyState } from '@/components/ui/feedback'
 import { Card, CardBody } from '@/components/ui/card'
 import { Container, PageHeader, Section } from '@/components/ui/layout'
+import { CourtMotif } from '@/components/public/court-artwork'
 import { venueConfig } from '@/lib/config'
 import { toLocale } from '@/i18n/config'
 import { formatDayList, formatMoney, formatTimeRange } from '@/lib/ui/format'
@@ -57,7 +58,11 @@ export default async function PricingPage({ params }: { params: { locale: string
 
         {courts.length === 0 || !hasAnyRule ? (
           <div className="mt-10">
-            <EmptyState title={t('empty')} description={t('emptyBody')} />
+            <EmptyState
+              title={t('empty')}
+              description={t('emptyBody')}
+              illustration={<CourtMotif />}
+            />
           </div>
         ) : (
           <div className="mt-10 flex flex-col gap-6">

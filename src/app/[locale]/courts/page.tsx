@@ -3,6 +3,7 @@ import { getTranslations, setRequestLocale } from 'next-intl/server'
 import { EmptyState } from '@/components/ui/feedback'
 import { Container, PageHeader, Section } from '@/components/ui/layout'
 import { CourtCard } from '@/components/public/court-card'
+import { CourtMotif } from '@/components/public/court-artwork'
 import { venueConfig } from '@/lib/config'
 import { toLocale } from '@/i18n/config'
 import * as courtsService from '@/modules/courts/courts.service'
@@ -45,8 +46,9 @@ export default async function CourtsPage({ params }: { params: { locale: string 
 
         {courts.length > 0 ? (
           <ul className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {courts.map((court) => (
-              <CourtCard key={court.id} court={court} />
+            {/* CourtCard renders its own <li>, so it is mapped directly here. */}
+            {courts.map((court, index) => (
+              <CourtCard key={court.id} court={court} entranceDelayMs={index * 60} />
             ))}
           </ul>
         ) : (
@@ -56,7 +58,11 @@ export default async function CourtsPage({ params }: { params: { locale: string 
               venue is being set up, not an error. It gets a plain explanation
               rather than a blank page.
             */}
-            <EmptyState title={t('empty')} description={t('emptyBody')} />
+            <EmptyState
+              title={t('empty')}
+              description={t('emptyBody')}
+              illustration={<CourtMotif />}
+            />
           </div>
         )}
       </Section>

@@ -85,7 +85,7 @@ export default async function ContactPage({ params }: { params: { locale: string
                     <a
                       href={`tel:${phone}`}
                       dir="ltr"
-                      className="mt-1 inline-block text-body text-brand-800 hover:underline"
+                      className="mt-1 inline-flex min-h-touch items-center text-body text-brand-800 hover:underline"
                     >
                       {phone}
                     </a>
@@ -104,7 +104,7 @@ export default async function ContactPage({ params }: { params: { locale: string
                       href={`https://wa.me/${whatsappDigits}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="mt-1 inline-flex items-center gap-1.5 text-body text-brand-800 hover:underline"
+                      className="mt-1 inline-flex min-h-touch items-center gap-1.5 text-body text-brand-800 hover:underline"
                     >
                       {t('openWhatsapp')}
                       <ExternalLink aria-hidden className="h-4 w-4" />
@@ -123,7 +123,7 @@ export default async function ContactPage({ params }: { params: { locale: string
                     <a
                       href={`mailto:${email}`}
                       dir="ltr"
-                      className="mt-1 inline-block break-all text-body text-brand-800 hover:underline"
+                      className="mt-1 inline-flex min-h-touch items-center break-all text-body text-brand-800 hover:underline"
                     >
                       {email}
                     </a>
@@ -144,7 +144,7 @@ export default async function ContactPage({ params }: { params: { locale: string
                         href={mapUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="mt-2 inline-flex items-center gap-1.5 text-body-sm text-brand-800 hover:underline"
+                        className="mt-2 inline-flex min-h-touch items-center gap-1.5 text-body-sm text-brand-800 hover:underline"
                       >
                         {t('openInMaps')}
                         <ExternalLink aria-hidden className="h-4 w-4" />
@@ -165,7 +165,7 @@ export default async function ContactPage({ params }: { params: { locale: string
                       href={mapUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="mt-1 inline-flex items-center gap-1.5 text-body text-brand-800 hover:underline"
+                      className="mt-1 inline-flex min-h-touch items-center gap-1.5 text-body text-brand-800 hover:underline"
                     >
                       {t('openInMaps')}
                       <ExternalLink aria-hidden className="h-4 w-4" />

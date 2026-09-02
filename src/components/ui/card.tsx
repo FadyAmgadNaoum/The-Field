@@ -5,13 +5,17 @@ export function Card({
   className,
   children,
   as: Element = 'div',
+  style,
 }: {
   className?: string
   children: React.ReactNode
   as?: 'div' | 'article' | 'li' | 'section'
+  /** Inline style, used for per-card animation delays in a staggered grid. */
+  style?: React.CSSProperties
 }) {
   return (
     <Element
+      style={style}
       className={cn(
         'overflow-hidden rounded-card border border-line bg-canvas shadow-card',
         className,
