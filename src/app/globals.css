@@ -1,0 +1,34 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/*
+ * Foundation only. The brand design system, Arabic/RTL typography and the
+ * animation layer are built in Milestone 2 (Doc 22 M2-T04, Doc 23 REL-M2-T01,
+ * REL-M2-T03).
+ */
+
+@layer base {
+  :root {
+    color-scheme: light;
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+}
+
+/*
+ * Doc 23 REL-M2-T03 requires every animation added later to respect this.
+ * Declaring it now means the rule is in place before the first animation.
+ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

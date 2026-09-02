@@ -1,0 +1,35 @@
+# Local development database ONLY (Doc 24 §D.1).
+#
+# Production and staging use a managed PostgreSQL 16 provider. Self-managed
+# PostgreSQL on the application VPS is explicitly not part of the design
+# (Doc 23 §9.4, §13.2, §16.6; Doc 24 §D.1).
+#
+#   docker compose up -d
+#   npm run db:migrate && npm run db:migrate:raw && npm run db:seed
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: thefield-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: thefield
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: localdev
+      # Deterministic collation so index behaviour matches production.
+      POSTGRES_INITDB_ARGS: '--encoding=UTF8'
+    ports:
+      - '5432:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      # Creates app_user / migration_user / backup_user and the required
+      # extensions on first start, mirroring the managed-provider setup.
+      - ./docker/initdb:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U postgres -d thefield']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  postgres_data:

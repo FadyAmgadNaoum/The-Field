@@ -1,0 +1,47 @@
+# Dependencies
+/node_modules
+/.pnp
+.pnp.js
+
+# Next.js
+/.next/
+/out/
+next-env.d.ts
+
+# Production build
+/build
+
+# Environment — NEVER commit real secrets (Doc 13 T-016, Doc 24 §O)
+.env
+.env.*
+!.env.example
+
+# Local file storage (development only — production uses Cloudflare R2, Doc 24 §H.1)
+/storage
+
+# Database dumps and backups
+*.sql.gz
+*.dump
+
+# Testing
+/coverage
+/test-results
+/playwright-report
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Editor / OS
+.DS_Store
+Thumbs.db
+.idea
+*.swp
+
+# TypeScript
+*.tsbuildinfo
+
+# Vercel
+.vercel
