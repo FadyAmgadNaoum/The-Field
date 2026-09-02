@@ -1,5 +1,5 @@
 import { logger } from '../logger'
-import { shutdownDrainMs } from '../config'
+import { getShutdownDrainMs } from '../config'
 
 /**
  * Graceful shutdown (Doc 23 §13.5, REL-M0-T03, Doc 24 §I.7).
@@ -43,12 +43,13 @@ export function registerGracefulShutdown(pool: PoolLike): void {
   const handle = (signal: NodeJS.Signals) => {
     if (shuttingDown) return
     shuttingDown = true
-    logger.info({ signal, drainMs: shutdownDrainMs }, 'Shutdown signal received — draining')
+    const drainMs = getShutdownDrainMs()
+    logger.info({ signal, drainMs }, 'Shutdown signal received — draining')
 
     void (async () => {
       try {
-        if (shutdownDrainMs > 0) {
-          await new Promise((resolve) => setTimeout(resolve, shutdownDrainMs))
+        if (drainMs > 0) {
+          await new Promise((resolve) => setTimeout(resolve, drainMs))
         }
         await pool.end()
         logger.info('Graceful shutdown complete')

@@ -13,6 +13,10 @@ const VALID: NodeJS.ProcessEnv = {
   STORAGE_PROVIDER: 's3',
   BOOKING_EXPIRY_MINUTES: '120',
   NEXT_PUBLIC_SITE_URL: 'https://thefield.eg',
+  // Required in production once customer authentication exists (Doc 23 REL-M1-T04).
+  GOOGLE_CLIENT_ID: 'test-client-id.apps.googleusercontent.com',
+  GOOGLE_CLIENT_SECRET: 'test-client-secret',
+  GOOGLE_REDIRECT_URI: 'https://thefield.eg/api/v1/auth/google/callback',
 }
 
 describe('parseServerEnv', () => {
@@ -84,6 +88,29 @@ describe('parseServerEnv', () => {
     const source = { ...VALID }
     delete source.NEXT_PUBLIC_SITE_URL
     expect(() => parseServerEnv(source)).toThrow(/NEXT_PUBLIC_SITE_URL/)
+  })
+
+  it.each(['GOOGLE_CLIENT_ID', 'GOOGLE_CLIENT_SECRET', 'GOOGLE_REDIRECT_URI'])(
+    'requires %s in production — Google Sign-In is part of the V1 booking flow',
+    (variable) => {
+      const source = { ...VALID }
+      delete source[variable]
+      expect(() => parseServerEnv(source)).toThrow(new RegExp(variable))
+    },
+  )
+
+  it('allows Google credentials to be absent outside production', () => {
+    // A developer or CI job without an OAuth client must still be able to boot;
+    // the OAuth routes return a controlled 503 instead.
+    const source: NodeJS.ProcessEnv = { ...VALID, NODE_ENV: 'development' }
+    delete source.GOOGLE_CLIENT_ID
+    delete source.GOOGLE_CLIENT_SECRET
+    delete source.GOOGLE_REDIRECT_URI
+    expect(() => parseServerEnv(source)).not.toThrow()
+  })
+
+  it('accepts the silent log level used by test suites', () => {
+    expect(parseServerEnv({ ...VALID, LOG_LEVEL: 'silent' }).LOG_LEVEL).toBe('silent')
   })
 
   it('rejects a pool minimum larger than the maximum', () => {

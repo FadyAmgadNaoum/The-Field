@@ -45,6 +45,42 @@ function buildContentSecurityPolicy(nonce: string, isDevelopment: boolean): stri
   ].join('; ')
 }
 
+const ADMIN_SESSION_COOKIE = 'thefield_admin_session'
+
+/** Admin paths reachable without a session. */
+const UNGUARDED_ADMIN_PATHS = ['/admin/login']
+
+/**
+ * Cheap redirect for admin pages with no session cookie.
+ *
+ * THIS IS NOT THE SECURITY BOUNDARY. It only checks that a cookie is PRESENT —
+ * it does not decrypt it, verify the signature, or consult the database, and it
+ * cannot: middleware runs on the Edge runtime where `pg` is unavailable.
+ *
+ * The authoritative checks are the server component guard in
+ * `src/app/admin/(dashboard)/layout.tsx` and the independent check inside every
+ * admin API route (Doc 22 §11.2, Doc 24 §M item 15). A forged cookie gets past
+ * this function and is rejected microseconds later by the real check.
+ *
+ * Its only job is to spare a signed-out administrator a pointless render.
+ */
+function buildResponse(request: NextRequest, forwardedHeaders: Headers): NextResponse {
+  const { pathname } = request.nextUrl
+
+  const isGuardedAdminPage =
+    pathname.startsWith('/admin') &&
+    !UNGUARDED_ADMIN_PATHS.some(
+      (allowed) => pathname === allowed || pathname.startsWith(`${allowed}/`),
+    )
+
+  if (isGuardedAdminPage && !request.cookies.has(ADMIN_SESSION_COOKIE)) {
+    const target = new URL('/admin/login', request.url)
+    return NextResponse.redirect(target)
+  }
+
+  return NextResponse.next({ request: { headers: forwardedHeaders } })
+}
+
 export function middleware(request: NextRequest): NextResponse {
   const isDevelopment = process.env.NODE_ENV === 'development'
   const nonce = Buffer.from(crypto.randomUUID()).toString('base64')
@@ -70,7 +106,7 @@ export function middleware(request: NextRequest): NextResponse {
   forwardedHeaders.set(REQUEST_ID_HEADER, requestId)
   forwardedHeaders.set(NONCE_HEADER, nonce)
 
-  const response = NextResponse.next({ request: { headers: forwardedHeaders } })
+  const response = buildResponse(request, forwardedHeaders)
 
   response.headers.set(REQUEST_ID_HEADER, requestId)
   response.headers.set(NONCE_HEADER, nonce)

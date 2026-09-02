@@ -96,11 +96,43 @@ export const serverEnvSchema = databaseEnvSchema
       15,
     ),
 
-    LOG_LEVEL: z.enum(['trace', 'debug', 'info', 'warn', 'error', 'fatal']).default('info'),
+    // Google Sign-In (Doc 10 §3.1, Doc 24 §E.2). Required in production only —
+    // see the superRefine below.
+    GOOGLE_CLIENT_ID: z.string().optional(),
+    GOOGLE_CLIENT_SECRET: z.string().optional(),
+    GOOGLE_REDIRECT_URI: z.string().url('GOOGLE_REDIRECT_URI must be an absolute URL').optional(),
+
+    // 'silent' is a real pino level and the one test suites use to keep output
+    // readable. It was missing from this enum until the first test to import
+    // the config module exposed it.
+    LOG_LEVEL: z
+      .enum(['trace', 'debug', 'info', 'warn', 'error', 'fatal', 'silent'])
+      .default('info'),
     SHUTDOWN_DRAIN_MS: z.string().optional(),
     SENTRY_DSN: z.string().optional(),
   })
   .superRefine((env, ctx) => {
+    // Doc 23 REL-M1-T04 adds the Google credentials to the required list once
+    // customer authentication exists. They are enforced in production only:
+    // requiring them everywhere would stop the application booting for any
+    // developer or CI job that has no OAuth client, while production — the
+    // environment that actually serves the flow — is still guaranteed to have
+    // them. The routes return a controlled 503 when unconfigured.
+    if (env.NODE_ENV === 'production') {
+      for (const key of [
+        'GOOGLE_CLIENT_ID',
+        'GOOGLE_CLIENT_SECRET',
+        'GOOGLE_REDIRECT_URI',
+      ] as const) {
+        if (!env[key]) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            path: [key],
+            message: `${key} is required in production — Google Sign-In is part of the V1 booking flow (Doc 10 §3.1).`,
+          })
+        }
+      }
+    }
     if (env.NODE_ENV === 'production' && env.STORAGE_PROVIDER === 'local') {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,

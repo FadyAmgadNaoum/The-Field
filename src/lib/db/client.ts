@@ -1,7 +1,7 @@
 import { drizzle, type NodePgDatabase } from 'drizzle-orm/node-postgres'
 import { sql } from 'drizzle-orm'
 import pg from 'pg'
-import { databaseConfig, isProduction } from '../config'
+import { databaseConfig } from '../config'
 import { logger } from '../logger'
 import { captureException } from '../observability'
 import * as schema from './schema'
@@ -16,6 +16,13 @@ import * as schema from './schema'
  * headroom on any managed plan with 60+ (Doc 23 §2.4). `connectionTimeoutMillis`
  * is short so an exhausted pool fails fast with a controlled 503 rather than
  * hanging (Doc 23 §2.5).
+ *
+ * ── LAZY CONSTRUCTION ────────────────────────────────────────────────────────
+ * The pool is built on first use, not at import. `next build` imports every
+ * route module to collect page data; constructing a pool then would demand a
+ * valid DATABASE_URL to produce a build artefact, breaking the property that a
+ * production build needs no secrets. `db` is a proxy so call sites are
+ * unchanged.
  */
 
 const { Pool } = pg
@@ -43,22 +50,41 @@ function createPool(): pg.Pool {
 }
 
 /**
- * Reuse the pool across Next.js dev hot reloads. Without this, every edit
- * opens a new pool and the connection limit is exhausted within minutes.
+ * Reuse the pool across Next.js dev hot reloads. Without this, every edit opens
+ * a new pool and the connection limit is exhausted within minutes.
  */
 const globalForDb = globalThis as unknown as {
   __thefieldPool?: pg.Pool
   __thefieldDb?: NodePgDatabase<typeof schema>
 }
 
-export const pool: pg.Pool = globalForDb.__thefieldPool ?? createPool()
-export const db: NodePgDatabase<typeof schema> =
-  globalForDb.__thefieldDb ?? drizzle(pool, { schema })
-
-if (!isProduction) {
-  globalForDb.__thefieldPool = pool
-  globalForDb.__thefieldDb = db
+/** The connection pool, created on first use. */
+export function getPool(): pg.Pool {
+  globalForDb.__thefieldPool ??= createPool()
+  return globalForDb.__thefieldPool
 }
+
+function getDb(): NodePgDatabase<typeof schema> {
+  globalForDb.__thefieldDb ??= drizzle(getPool(), { schema })
+  return globalForDb.__thefieldDb
+}
+
+/**
+ * Drizzle client.
+ *
+ * A proxy so that `import { db }` costs nothing until a query is actually run.
+ * Methods are bound to the real instance, so drizzle's internal `this` works.
+ */
+export const db: NodePgDatabase<typeof schema> = new Proxy({} as NodePgDatabase<typeof schema>, {
+  get(_target, property, receiver) {
+    const instance = getDb()
+    const value = Reflect.get(instance as object, property, receiver) as unknown
+    return typeof value === 'function' ? value.bind(instance) : value
+  },
+  has(_target, property) {
+    return Reflect.has(getDb() as object, property)
+  },
+})
 
 export interface DatabaseHealth {
   connected: boolean

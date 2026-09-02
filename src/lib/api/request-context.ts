@@ -32,14 +32,32 @@ export function getRequestId(request: Request): string {
  * unless it arrives from a Cloudflare range, and that check belongs at the
  * proxy, not in application code.
  */
+const IPV4 = /^(\d{1,3}\.){3}\d{1,3}$/
+const IPV6 = /^[0-9a-f:]+$/i
+
+/**
+ * Accept only something that is actually an IP address.
+ *
+ * The value ends up in `inet` columns (`admin_users.last_login_ip`,
+ * `bookings.ip_address`), where PostgreSQL rejects malformed input with a
+ * syntax error. Without this guard a bad header — from a misconfigured proxy or
+ * a spoofing attempt — would turn a valid sign-in into a 500.
+ */
+function isIpAddress(value: string): boolean {
+  if (IPV4.test(value)) {
+    return value.split('.').every((octet) => Number(octet) <= 255)
+  }
+  return value.includes(':') && IPV6.test(value)
+}
+
 export function getClientIp(request: Request): string | null {
   const realIp = request.headers.get('x-real-ip')?.trim()
-  if (realIp) return realIp
+  if (realIp && isIpAddress(realIp)) return realIp
 
   const forwarded = request.headers.get('x-forwarded-for')
   if (forwarded) {
     const first = forwarded.split(',')[0]?.trim()
-    if (first) return first
+    if (first && isIpAddress(first)) return first
   }
 
   return null

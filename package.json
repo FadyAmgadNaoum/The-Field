@@ -27,11 +27,14 @@
     "db:down": "docker compose down"
   },
   "dependencies": {
+    "arctic": "^3.7.0",
     "bcryptjs": "^2.4.3",
     "drizzle-orm": "^0.33.0",
+    "iron-session": "^8.0.4",
     "next": "^14.2.5",
     "pg": "^8.12.0",
     "pino": "^9.3.2",
+    "rate-limiter-flexible": "^5.0.5",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "zod": "^3.23.8"
