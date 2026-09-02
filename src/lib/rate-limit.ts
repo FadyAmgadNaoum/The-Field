@@ -58,6 +58,28 @@ export const oauthLimiter = new RateLimiterMemory({
   duration: 15 * 60,
 })
 
+/**
+ * Doc 24 §I.6 — booking status lookup.
+ *
+ * The account is the PRIMARY key here, not the IP. Doc 11 §4.4 and Doc 13 T-013
+ * make that choice for a specific reason: the endpoint takes a booking
+ * reference, so the abuse to bound is one signed-in account trying references
+ * in bulk. An IP limit alone would not stop that; it is the secondary key,
+ * sized higher so a household or office behind one address is not penalised for
+ * one member's activity.
+ *
+ * Both checks must pass.
+ */
+export const bookingStatusAccountLimiter = new RateLimiterMemory({
+  points: 10,
+  duration: 10 * 60,
+})
+
+export const bookingStatusIpLimiter = new RateLimiterMemory({
+  points: 30,
+  duration: 10 * 60,
+})
+
 /** Doc 11 §7 — all non-login admin routes, 120 per minute per administrator. */
 export const adminMutationLimiter = new RateLimiterMemory({
   points: 120,

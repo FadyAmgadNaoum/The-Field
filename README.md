@@ -76,6 +76,23 @@ This variable has **no default and never will**. It encodes OBD-002 — an unres
 
 The value you set locally carries no business meaning. Do not copy it to staging or production.
 
+### Storage
+
+`STORAGE_PROVIDER=local` writes uploads under `LOCAL_STORAGE_PATH` (default
+`./storage`) and serves them from `/media`, which exists in development only —
+the environment schema refuses `local` in production, and the media route
+refuses to serve anything when `NODE_ENV=production` (`docs/24` §H.1).
+
+For `STORAGE_PROVIDER=s3`, set `S3_ENDPOINT`, `S3_ACCESS_KEY_ID`,
+`S3_SECRET_ACCESS_KEY`, `S3_PRIVATE_BUCKET`, `S3_PUBLIC_BUCKET` and
+`S3_PUBLIC_BASE_URL`. These are deliberately not required at startup — the
+startup-required set is fixed by Doc 22 M0-T07 — so the S3 backend validates
+them on first use and reports exactly which are missing.
+
+`S3_PUBLIC_BASE_URL` is additionally read at **build time** to register the
+public media host with `next/image`. A build with it unset still succeeds;
+remote images simply are not optimised until it is set.
+
 ---
 
 ## Commands
@@ -91,6 +108,7 @@ The value you set locally carries no business meaning. Do not copy it to staging
 | `npm run format:check` | Verify formatting without writing |
 | `npm run test:unit` | Unit tests — fast, no database |
 | `npm run test:integration` | Integration tests — **requires** a running database |
+| `npm run test:a11y` | Accessibility audit — **requires** the app running on port 3000 |
 | `npm run db:up` / `db:down` | Start / stop local PostgreSQL |
 | `npm run db:generate` | Generate a migration from schema changes |
 | `npm run db:migrate` | Apply Drizzle migrations |
@@ -104,6 +122,55 @@ Before opening a pull request:
 npm run typecheck && npm run lint && npm run format:check && npm run test:unit && npm run build
 ```
 
+The accessibility audit fetches each public page from a running application and
+runs axe-core against the real server-rendered HTML, so it needs a server:
+
+```bash
+npm run dev          # in one terminal
+npm run test:a11y    # in another  (override the origin with A11Y_BASE_URL)
+```
+
+---
+
+## Public website
+
+The customer-facing site is bilingual Arabic and English with full RTL
+(Doc 24 §C.3). The locale is always the first path segment, so `/` redirects to
+the visitor's preferred language.
+
+| Route | Contents |
+| --- | --- |
+| `/{locale}` | Home — hero, announcements, about, courts preview, gallery strip |
+| `/{locale}/courts` | Active courts with photos and features |
+| `/{locale}/pricing` | Published rate card per court |
+| `/{locale}/about` | About text and opening hours |
+| `/{locale}/faq` | Published questions and answers |
+| `/{locale}/gallery` | Published gallery images |
+| `/{locale}/contact` | Phone, WhatsApp, email, address — whatever is configured |
+| `/{locale}/signin` | Customer sign-in and registration |
+| `/{locale}/booking-status` | Booking lookup for the signed-in account |
+
+Every one of these renders correctly when the CMS and the venue tables are
+empty, which is the state the application ships in — no page invents a phone
+number, a price, an opening hour or an InstaPay account.
+
+The booking flow itself (court → date → time → details → confirmation) is
+Milestone 3; `/{locale}/book` does not exist yet, and the "Book now" call to
+action leads to the courts page until it does.
+
+### Content administration
+
+`/admin/cms/settings` plus one editor per collection — FAQs, gallery, events,
+announcements, social links. All require the `manage_cms` permission, all write
+an audit row, and all invalidate the public cache tag so a saved change appears
+on the site immediately. The admin dashboard is English-only in V1.
+
+### Adding or changing UI text
+
+Customer-facing strings live in `messages/en.json` and `messages/ar.json` — never
+in JSX. A unit test fails the build if the two files drift apart, if a value is
+empty, or if an ICU placeholder differs between them.
+
 ---
 
 ## Layout
@@ -111,8 +178,12 @@ npm run typecheck && npm run lint && npm run format:check && npm run test:unit &
 ```
 src/
 ├── app/                     Next.js App Router
+│   ├── [locale]/            public website — its own root layout (lang + dir)
+│   ├── admin/               dashboard — its own root layout, English only
+│   ├── media/               local-disk media route (development only)
 │   ├── api/health/          live · ready · combined
 │   └── api/v1/              versioned API namespace
+├── i18n/                    locale config, request config, navigation helpers
 ├── db/
 │   ├── schema/              one file per table
 │   ├── migrations/          Drizzle-generated
@@ -120,22 +191,37 @@ src/
 │   ├── migrate.ts           db:migrate
 │   ├── migrate-raw.ts       db:migrate:raw
 │   └── seed.ts              db:seed
+├── components/
+│   ├── ui/                  button, card, field, feedback, layout primitives
+│   ├── layout/              header, mobile nav, footer, language switcher
+│   ├── public/              court card, sign-in form, booking status lookup
+│   └── admin/               CMS editors
+├── modules/                 domain modules — service + repository per boundary
+│   ├── cms/                 settings catalogue, collections, image pipeline
+│   ├── storage/             R2 / local-disk abstraction, ULID keys
+│   ├── courts/ venue/ pricing/   read-side services for the public pages
+│   ├── bookings/ payments/  status lookup only until Milestone 3
+│   └── admin/ audit/ customers/
 ├── lib/
-│   ├── api/                 response envelope, route wrapper, request context
+│   ├── api/                 response envelope, route wrapper, admin guard
 │   ├── config/              environment validation
 │   ├── db/                  pool and Drizzle client
 │   ├── errors/              application error model
 │   ├── lifecycle/           graceful shutdown
 │   ├── rbac/                permission catalogue
+│   ├── ui/                  cn(), locale-aware formatting, browser API client
+│   ├── validation/          Zod schemas, magic-byte upload validation
+│   ├── cms-sanitize.ts      rich-text sanitisation, applied at write time
 │   ├── logger.ts            pino with redaction
 │   └── observability.ts     error-capture seam
-├── middleware.ts            security headers, CSP nonce, request id
+├── middleware.ts            security headers, CSP nonce, request id, locale
 └── instrumentation.ts       process lifecycle hooks
 
+messages/                    en.json · ar.json — every customer-facing string
 docker/initdb/               local-only role and extension bootstrap
 nginx/thefield.conf          reverse proxy, rate limits, Cloudflare real-IP
 ecosystem.config.js          PM2 — two instances
-tests/{unit,integration}/
+tests/{unit,integration,a11y}/
 ```
 
 ---

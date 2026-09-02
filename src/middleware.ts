@@ -1,8 +1,10 @@
+import createIntlMiddleware from 'next-intl/middleware'
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
+import { DEFAULT_LOCALE, LOCALES } from '@/i18n/config'
 
 /**
- * Security headers, CSP nonce and request correlation.
+ * Security headers, CSP nonce, request correlation and locale routing.
  *
  * LOCATION IS LOAD-BEARING: Next.js only detects middleware at `src/middleware.ts`
  * or the project root. Doc 22 §3/§6.5 place it at `src/app/middleware.ts`, where
@@ -10,15 +12,39 @@ import type { NextRequest } from 'next/server'
  * that inspect the app router would still pass. Doc 24 §C.2 corrects this.
  *
  * This file runs on the Edge runtime. It must not import the config module, the
- * logger, or anything that touches `pg` — those are Node-only.
+ * logger, or anything that touches `pg` — those are Node-only. `@/i18n/config`
+ * is deliberately free of Node imports for this reason.
  *
- * Header set: Doc 10 §5.5, Doc 22 §6.5. NGINX re-applies a subset at the edge as
- * belt-and-suspenders (Doc 22 §14.5); duplication here is intentional so the
- * application is not dependent on proxy configuration for its baseline posture.
+ * ── ORDER OF WORK ────────────────────────────────────────────────────────────
+ * 1. Resolve the request id and CSP nonce (every request).
+ * 2. Produce a base response:
+ *      - admin pages with no session cookie  → redirect to the login page
+ *      - localised public pages              → next-intl (redirect or rewrite)
+ *      - everything else (API, media)        → pass through
+ * 3. Apply the security header set to whatever response step 2 produced.
+ *
+ * Step 3 runs unconditionally, so a redirect issued by next-intl carries the
+ * same headers as a normal page. The header set is never conditional on the
+ * route (Doc 10 §5.5, Doc 22 §6.5).
  */
 
 const REQUEST_ID_HEADER = 'x-request-id'
 const NONCE_HEADER = 'x-nonce'
+
+/**
+ * Locale routing (Doc 24 §C.3, Doc 23 REL-M2-T01).
+ *
+ * `localePrefix: 'always'` keeps the locale in the URL for SEO and so a shared
+ * link opens in the language it was shared in. Detection order is next-intl's
+ * default and matches the documented requirement: an explicit cookie from a
+ * previous manual choice, then the `Accept-Language` header, then the default.
+ */
+const intlMiddleware = createIntlMiddleware({
+  locales: LOCALES,
+  defaultLocale: DEFAULT_LOCALE,
+  localePrefix: 'always',
+  localeDetection: true,
+})
 
 function buildContentSecurityPolicy(nonce: string, isDevelopment: boolean): string {
   // Next.js development mode requires eval for React Refresh and injects inline
@@ -51,6 +77,28 @@ const ADMIN_SESSION_COOKIE = 'thefield_admin_session'
 const UNGUARDED_ADMIN_PATHS = ['/admin/login']
 
 /**
+ * Paths that must never be locale-prefixed.
+ *
+ * The API is a machine contract — `/en/api/v1/...` is not a route and a rewrite
+ * would break every client. The admin dashboard is English-only in V1
+ * (Doc 23 REL-M2-T01). `/media` is the local-disk storage route used in
+ * development.
+ */
+const NON_LOCALISED_PREFIXES = ['/api', '/admin', '/media']
+
+function isLocalisedPath(pathname: string): boolean {
+  if (
+    NON_LOCALISED_PREFIXES.some(
+      (prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`),
+    )
+  ) {
+    return false
+  }
+  // A path with a file extension is an asset request, not a page.
+  return !/\.[a-zA-Z0-9]+$/.test(pathname)
+}
+
+/**
  * Cheap redirect for admin pages with no session cookie.
  *
  * THIS IS NOT THE SECURITY BOUNDARY. It only checks that a cookie is PRESENT —
@@ -76,6 +124,10 @@ function buildResponse(request: NextRequest, forwardedHeaders: Headers): NextRes
   if (isGuardedAdminPage && !request.cookies.has(ADMIN_SESSION_COOKIE)) {
     const target = new URL('/admin/login', request.url)
     return NextResponse.redirect(target)
+  }
+
+  if (isLocalisedPath(pathname)) {
+    return intlMiddleware(request)
   }
 
   return NextResponse.next({ request: { headers: forwardedHeaders } })

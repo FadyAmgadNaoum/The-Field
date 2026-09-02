@@ -1,0 +1,209 @@
+{
+  "common": {
+    "siteName": "ذا فيلد",
+    "loading": "جارٍ التحميل…",
+    "errorTitle": "حدث خطأ",
+    "errorBody": "تعذّر تحميل هذا المحتوى. يُرجى المحاولة مرة أخرى بعد قليل.",
+    "retry": "إعادة المحاولة",
+    "close": "إغلاق",
+    "back": "رجوع",
+    "notConfigured": "لم يُضبط بعد"
+  },
+  "nav": {
+    "skipToContent": "تخطَّ إلى المحتوى الرئيسي",
+    "primaryLabel": "التنقل الرئيسي",
+    "home": "الرئيسية",
+    "courts": "الملاعب",
+    "pricing": "الأسعار",
+    "gallery": "معرض الصور",
+    "faq": "الأسئلة الشائعة",
+    "contact": "تواصل معنا",
+    "bookNow": "احجز الآن",
+    "bookingStatus": "حجزي",
+    "signIn": "تسجيل الدخول",
+    "openMenu": "فتح القائمة",
+    "closeMenu": "إغلاق القائمة",
+    "menuLabel": "قائمة الموقع",
+    "languageLabel": "اللغة",
+    "switchToArabic": "التبديل إلى العربية",
+    "switchToEnglish": "التبديل إلى الإنجليزية",
+    "whatsapp": "تواصل معنا على واتساب"
+  },
+  "footer": {
+    "linksHeading": "استكشف",
+    "contactHeading": "تواصل معنا",
+    "followHeading": "تابعنا",
+    "rights": "جميع الحقوق محفوظة.",
+    "contactPending": "سيتم نشر بيانات التواصل قريبًا."
+  },
+  "home": {
+    "heroHeadline": "احجز ملعب البادل في ذا فيلد",
+    "heroSubtitle": "اختر الملعب، وحدّد الوقت، واحجز في خطوات بسيطة.",
+    "heroCta": "احجز الآن",
+    "heroSecondaryCta": "عرض الملاعب",
+    "announcementsLabel": "إعلانات",
+    "aboutHeading": "عن ذا فيلد",
+    "aboutBody": "ذا فيلد ملعب بادل. يقوم فريق الملعب بنشر التفاصيل الكاملة.",
+    "courtsHeading": "ملاعبنا",
+    "courtsSubtitle": "جميع الملاعب المتاحة للحجز.",
+    "courtsEmpty": "ستظهر الملاعب هنا بمجرد إضافتها.",
+    "viewAllCourts": "عرض كل الملاعب",
+    "galleryHeading": "من داخل ذا فيلد",
+    "viewGallery": "تصفّح معرض الصور",
+    "ctaHeading": "جاهز للعب؟",
+    "ctaBody": "احجز ملعبك وأكمل الدفع مع الملعب.",
+    "ctaButton": "احجز ملعبًا"
+  },
+  "courts": {
+    "title": "الملاعب",
+    "subtitle": "جميع الملاعب المتاحة حاليًا في ذا فيلد.",
+    "empty": "الملاعب قريبًا.",
+    "emptyBody": "لم يتم نشر أي ملاعب بعد. يُرجى العودة لاحقًا.",
+    "featuresHeading": "المميزات",
+    "bookThisCourt": "احجز هذا الملعب",
+    "photoAlt": "صورة لملعب {court}",
+    "noPhoto": "لا توجد صورة متاحة",
+    "typeLabel": "نوع الملعب"
+  },
+  "pricing": {
+    "title": "الأسعار",
+    "subtitle": "الأسعار المنشورة لكل ملعب.",
+    "empty": "الأسعار قريبًا.",
+    "emptyBody": "لم يتم نشر الأسعار بعد. يُرجى العودة لاحقًا.",
+    "perHour": "للساعة",
+    "daysLabel": "الأيام",
+    "timeLabel": "الوقت",
+    "allDays": "كل الأيام",
+    "noRulesForCourt": "لم يتم نشر أسعار لهذا الملعب بعد.",
+    "authorityNoteHeading": "كيف يُحتسب السعر",
+    "authorityNoteBody": "يُحتسب سعر الحجز في ذا فيلد عند إنشاء الحجز، وفقًا للأسعار المنشورة أعلاه. المبلغ الظاهر في تأكيد حجزك هو المبلغ المطبَّق."
+  },
+  "about": {
+    "title": "عن الملعب",
+    "bodyFallback": "سيقوم فريق الملعب بنشر التفاصيل.",
+    "hoursHeading": "مواعيد العمل",
+    "hoursEmpty": "مواعيد العمل قريبًا.",
+    "closed": "مغلق",
+    "facilitiesHeading": "المرافق"
+  },
+  "faq": {
+    "title": "الأسئلة الشائعة",
+    "subtitle": "إجابات منشورة من الملعب.",
+    "empty": "سيتم نشر الأسئلة والإجابات هنا قريبًا."
+  },
+  "gallery": {
+    "title": "معرض الصور",
+    "subtitle": "صور من ذا فيلد.",
+    "empty": "معرض الصور قريبًا.",
+    "emptyBody": "لم يتم نشر أي صور بعد.",
+    "imageAlt": "صورة من ذا فيلد"
+  },
+  "contact": {
+    "title": "تواصل معنا",
+    "subtitle": "طرق التواصل مع ذا فيلد.",
+    "phone": "الهاتف",
+    "whatsapp": "واتساب",
+    "email": "البريد الإلكتروني",
+    "address": "العنوان",
+    "empty": "سيتم نشر بيانات التواصل قريبًا.",
+    "emptyBody": "لم يتم نشر بيانات التواصل بعد.",
+    "openWhatsapp": "فتح واتساب",
+    "mapHeading": "موقعنا",
+    "openInMaps": "الفتح في الخرائط"
+  },
+  "signin": {
+    "title": "تسجيل الدخول",
+    "subtitle": "سجّل الدخول لحجز ملعب ومتابعة حجوزاتك.",
+    "emailLabel": "البريد الإلكتروني",
+    "passwordLabel": "كلمة المرور",
+    "submit": "تسجيل الدخول",
+    "submitting": "جارٍ تسجيل الدخول…",
+    "googleButton": "المتابعة عبر Google",
+    "or": "أو",
+    "noAccount": "جديد في ذا فيلد؟",
+    "createAccount": "إنشاء حساب",
+    "haveAccount": "لديك حساب بالفعل؟",
+    "signInInstead": "سجّل الدخول بدلًا من ذلك",
+    "registerTitle": "إنشاء حساب",
+    "registerSubtitle": "الحساب يتيح لك الحجز ومتابعة حجوزاتك.",
+    "fullNameLabel": "الاسم الكامل",
+    "registerSubmit": "إنشاء الحساب",
+    "registerSubmitting": "جارٍ إنشاء الحساب…",
+    "passwordHint": "٨ أحرف على الأقل.",
+    "alreadySignedIn": "أنت مسجّل الدخول باسم {email}.",
+    "goToBookingStatus": "متابعة حجزي"
+  },
+  "bookingStatus": {
+    "title": "حالة الحجز",
+    "subtitle": "اطّلع على حجز تم من خلال حسابك.",
+    "signInRequired": "سجّل الدخول للاطّلاع على حجزك",
+    "signInRequiredBody": "تظهر تفاصيل الحجز فقط للحساب الذي أنشأ الحجز.",
+    "signInCta": "تسجيل الدخول",
+    "referenceLabel": "رقم الحجز",
+    "referencePlaceholder": "TF-20260101-ABCD",
+    "referenceHint": "الرقم الظاهر في تأكيد حجزك.",
+    "submit": "عرض الحالة",
+    "submitting": "جارٍ التحقق…",
+    "notFound": "لم يُعثر على حجز بهذا الرقم في حسابك.",
+    "resultHeading": "الحجز {reference}",
+    "courtLabel": "الملعب",
+    "dateLabel": "التاريخ",
+    "timeLabel": "الوقت",
+    "priceLabel": "السعر",
+    "statusLabel": "حالة الحجز",
+    "paymentStatusLabel": "الدفع",
+    "rejectionReasonLabel": "السبب",
+    "uploadProofHeading": "إثبات الدفع",
+    "uploadProofBody": "هذا الحجز في انتظار إثبات الدفع. سيتاح رفع الإثبات مع تفعيل نظام الدفع في الملعب.",
+    "status": {
+      "pending": "في انتظار إثبات الدفع",
+      "payment_submitted": "تم استلام إثبات الدفع",
+      "under_review": "قيد المراجعة",
+      "approved": "مؤكَّد",
+      "rejected": "مرفوض",
+      "cancelled": "ملغى",
+      "expired": "منتهي"
+    },
+    "statusHelp": {
+      "pending": "أرسل المبلغ وارفع إثبات الدفع لتثبيت الموعد.",
+      "payment_submitted": "يقوم الملعب بمراجعة الدفع.",
+      "under_review": "يقوم الملعب بمراجعة الحجز.",
+      "approved": "تم تأكيد حجزك. نراك في ذا فيلد.",
+      "rejected": "لم يتم قبول هذا الحجز.",
+      "cancelled": "تم إلغاء هذا الحجز.",
+      "expired": "انتهت صلاحية الحجز قبل استلام إثبات الدفع."
+    },
+    "payment": {
+      "pending": "لم يُرسل بعد",
+      "submitted": "تم الإرسال",
+      "verified": "تم التحقق",
+      "rejected": "مرفوض"
+    }
+  },
+  "payment": {
+    "heading": "تعليمات الدفع",
+    "instapayNumber": "رقم إنستاباي",
+    "instapayAccountName": "اسم الحساب",
+    "unavailableHeading": "يجري ضبط تعليمات الدفع",
+    "unavailableBody": "يُرجى التواصل مع الملعب مباشرةً للحصول على بيانات الدفع."
+  },
+  "errors": {
+    "VALIDATION_ERROR": "يُرجى مراجعة البيانات المُدخلة والمحاولة مرة أخرى.",
+    "UNAUTHORIZED": "يُرجى تسجيل الدخول للمتابعة.",
+    "FORBIDDEN": "ليس لديك صلاحية للقيام بذلك.",
+    "NOT_FOUND": "لم نتمكن من العثور على ما تبحث عنه.",
+    "RATE_LIMITED": "محاولات كثيرة. يُرجى الانتظار قليلًا ثم المحاولة مرة أخرى.",
+    "SERVICE_UNAVAILABLE": "الخدمة غير متاحة مؤقتًا. يُرجى المحاولة بعد قليل.",
+    "INTERNAL_ERROR": "حدث خطأ لدينا. يُرجى المحاولة مرة أخرى.",
+    "NETWORK": "تعذّر الاتصال بذا فيلد. تحقّق من اتصالك وحاول مرة أخرى."
+  },
+  "notFound": {
+    "title": "الصفحة غير موجودة",
+    "body": "الصفحة التي تبحث عنها غير موجودة.",
+    "cta": "الانتقال إلى الصفحة الرئيسية"
+  },
+  "metadata": {
+    "defaultTitle": "ذا فيلد",
+    "defaultDescription": "احجز ملعب بادل في ذا فيلد."
+  }
+}

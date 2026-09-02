@@ -1,0 +1,209 @@
+{
+  "common": {
+    "siteName": "The Field",
+    "loading": "Loading…",
+    "errorTitle": "Something went wrong",
+    "errorBody": "We could not load this content. Please try again in a moment.",
+    "retry": "Try again",
+    "close": "Close",
+    "back": "Back",
+    "notConfigured": "Not yet configured"
+  },
+  "nav": {
+    "skipToContent": "Skip to main content",
+    "primaryLabel": "Primary",
+    "home": "Home",
+    "courts": "Courts",
+    "pricing": "Pricing",
+    "gallery": "Gallery",
+    "faq": "FAQs",
+    "contact": "Contact",
+    "bookNow": "Book now",
+    "bookingStatus": "My booking",
+    "signIn": "Sign in",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "menuLabel": "Site menu",
+    "languageLabel": "Language",
+    "switchToArabic": "Switch to Arabic",
+    "switchToEnglish": "Switch to English",
+    "whatsapp": "Contact us on WhatsApp"
+  },
+  "footer": {
+    "linksHeading": "Explore",
+    "contactHeading": "Get in touch",
+    "followHeading": "Follow us",
+    "rights": "All rights reserved.",
+    "contactPending": "Contact details will be published shortly."
+  },
+  "home": {
+    "heroHeadline": "Book your padel court at The Field",
+    "heroSubtitle": "Choose a court, pick your time, and reserve in a few taps.",
+    "heroCta": "Book now",
+    "heroSecondaryCta": "View courts",
+    "announcementsLabel": "Announcements",
+    "aboutHeading": "About The Field",
+    "aboutBody": "The Field is a padel venue. Full details are published by the venue team.",
+    "courtsHeading": "Our courts",
+    "courtsSubtitle": "Every court available for booking.",
+    "courtsEmpty": "Courts will be listed here once the venue has added them.",
+    "viewAllCourts": "See all courts",
+    "galleryHeading": "Inside The Field",
+    "viewGallery": "View the gallery",
+    "ctaHeading": "Ready to play?",
+    "ctaBody": "Reserve a court and settle payment with the venue.",
+    "ctaButton": "Book a court"
+  },
+  "courts": {
+    "title": "Courts",
+    "subtitle": "Every court currently available at The Field.",
+    "empty": "Courts coming soon.",
+    "emptyBody": "The venue has not published any courts yet. Please check back shortly.",
+    "featuresHeading": "Features",
+    "bookThisCourt": "Book this court",
+    "photoAlt": "Photo of {court}",
+    "noPhoto": "No photo available",
+    "typeLabel": "Court type"
+  },
+  "pricing": {
+    "title": "Pricing",
+    "subtitle": "Rates published by the venue for each court.",
+    "empty": "Pricing coming soon.",
+    "emptyBody": "The venue has not published pricing yet. Please check back shortly.",
+    "perHour": "per hour",
+    "daysLabel": "Days",
+    "timeLabel": "Time",
+    "allDays": "Every day",
+    "noRulesForCourt": "No pricing published for this court yet.",
+    "authorityNoteHeading": "How pricing is applied",
+    "authorityNoteBody": "The rate for a booking is calculated by The Field when the booking is created, using the rules published above. The amount shown on your confirmation is the amount that applies."
+  },
+  "about": {
+    "title": "About",
+    "bodyFallback": "Details about The Field will be published by the venue team.",
+    "hoursHeading": "Opening hours",
+    "hoursEmpty": "Opening hours coming soon.",
+    "closed": "Closed",
+    "facilitiesHeading": "Facilities"
+  },
+  "faq": {
+    "title": "Frequently asked questions",
+    "subtitle": "Answers published by the venue.",
+    "empty": "Questions and answers will be published here shortly."
+  },
+  "gallery": {
+    "title": "Gallery",
+    "subtitle": "Photos from The Field.",
+    "empty": "Gallery coming soon.",
+    "emptyBody": "The venue has not published any photos yet.",
+    "imageAlt": "Photo from The Field"
+  },
+  "contact": {
+    "title": "Contact",
+    "subtitle": "How to reach The Field.",
+    "phone": "Phone",
+    "whatsapp": "WhatsApp",
+    "email": "Email",
+    "address": "Address",
+    "empty": "Contact details will be published shortly.",
+    "emptyBody": "The venue has not published contact information yet.",
+    "openWhatsapp": "Open WhatsApp",
+    "mapHeading": "Find us",
+    "openInMaps": "Open in Maps"
+  },
+  "signin": {
+    "title": "Sign in",
+    "subtitle": "Sign in to reserve a court and check your bookings.",
+    "emailLabel": "Email address",
+    "passwordLabel": "Password",
+    "submit": "Sign in",
+    "submitting": "Signing in…",
+    "googleButton": "Continue with Google",
+    "or": "or",
+    "noAccount": "New to The Field?",
+    "createAccount": "Create an account",
+    "haveAccount": "Already have an account?",
+    "signInInstead": "Sign in instead",
+    "registerTitle": "Create an account",
+    "registerSubtitle": "An account lets you make and track bookings.",
+    "fullNameLabel": "Full name",
+    "registerSubmit": "Create account",
+    "registerSubmitting": "Creating account…",
+    "passwordHint": "At least 8 characters.",
+    "alreadySignedIn": "You are signed in as {email}.",
+    "goToBookingStatus": "Check my booking"
+  },
+  "bookingStatus": {
+    "title": "Booking status",
+    "subtitle": "Look up a booking made with your account.",
+    "signInRequired": "Sign in to check a booking",
+    "signInRequiredBody": "Booking details are only shown to the account that made the booking.",
+    "signInCta": "Sign in",
+    "referenceLabel": "Booking reference",
+    "referencePlaceholder": "TF-20260101-ABCD",
+    "referenceHint": "The reference shown on your confirmation.",
+    "submit": "Check status",
+    "submitting": "Checking…",
+    "notFound": "No booking with that reference was found on your account.",
+    "resultHeading": "Booking {reference}",
+    "courtLabel": "Court",
+    "dateLabel": "Date",
+    "timeLabel": "Time",
+    "priceLabel": "Price",
+    "statusLabel": "Booking status",
+    "paymentStatusLabel": "Payment",
+    "rejectionReasonLabel": "Reason given",
+    "uploadProofHeading": "Payment proof",
+    "uploadProofBody": "This booking is waiting for payment proof. Proof upload becomes available with the venue payment workflow.",
+    "status": {
+      "pending": "Awaiting payment proof",
+      "payment_submitted": "Payment proof received",
+      "under_review": "Under review",
+      "approved": "Confirmed",
+      "rejected": "Rejected",
+      "cancelled": "Cancelled",
+      "expired": "Expired"
+    },
+    "statusHelp": {
+      "pending": "Send your payment and upload the proof to secure this slot.",
+      "payment_submitted": "The venue is checking your payment.",
+      "under_review": "The venue is reviewing this booking.",
+      "approved": "Your court is booked. See you at The Field.",
+      "rejected": "This booking was not accepted.",
+      "cancelled": "This booking was cancelled.",
+      "expired": "This booking expired before payment proof was received."
+    },
+    "payment": {
+      "pending": "Not yet submitted",
+      "submitted": "Submitted",
+      "verified": "Verified",
+      "rejected": "Rejected"
+    }
+  },
+  "payment": {
+    "heading": "Payment instructions",
+    "instapayNumber": "InstaPay number",
+    "instapayAccountName": "Account name",
+    "unavailableHeading": "Payment instructions are being configured",
+    "unavailableBody": "Please contact the venue directly for payment details."
+  },
+  "errors": {
+    "VALIDATION_ERROR": "Please check the details you entered and try again.",
+    "UNAUTHORIZED": "Please sign in to continue.",
+    "FORBIDDEN": "You do not have permission to do that.",
+    "NOT_FOUND": "We could not find what you were looking for.",
+    "RATE_LIMITED": "Too many attempts. Please wait a moment and try again.",
+    "SERVICE_UNAVAILABLE": "The service is temporarily unavailable. Please try again shortly.",
+    "INTERNAL_ERROR": "Something went wrong on our side. Please try again.",
+    "NETWORK": "We could not reach The Field. Check your connection and try again."
+  },
+  "notFound": {
+    "title": "Page not found",
+    "body": "The page you were looking for does not exist.",
+    "cta": "Go to the home page"
+  },
+  "metadata": {
+    "defaultTitle": "The Field",
+    "defaultDescription": "Book a padel court at The Field."
+  }
+}

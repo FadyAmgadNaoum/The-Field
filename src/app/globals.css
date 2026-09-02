@@ -3,9 +3,11 @@
 @tailwind utilities;
 
 /*
- * Foundation only. The brand design system, Arabic/RTL typography and the
- * animation layer are built in Milestone 2 (Doc 22 M2-T04, Doc 23 REL-M2-T01,
- * REL-M2-T03).
+ * Global base layer (Doc 22 M2-T04, Doc 23 REL-M2-T01, REL-M2-T03).
+ *
+ * Design tokens live in tailwind.config.ts. This file holds only what a
+ * utility class cannot express: element defaults, focus behaviour, and the
+ * reduced-motion contract.
  */
 
 @layer base {
@@ -15,12 +17,76 @@
 
   html {
     -webkit-text-size-adjust: 100%;
+    /*
+     * Smooth in-page scrolling is neutralised by the reduced-motion block
+     * below, so this is safe to declare globally.
+     */
+    scroll-behavior: smooth;
+  }
+
+  body {
+    /*
+     * Arabic needs slightly more leading than Latin at the same size to stay
+     * comfortable; the base line-height accommodates both scripts.
+     */
+    line-height: 1.6;
+  }
+
+  /*
+   * Arabic typography (Doc 23 REL-M2-T01).
+   *
+   * Attribute-scoped rather than class-scoped so it follows the `dir` on
+   * <html> automatically and no component has to remember to opt in.
+   */
+  [lang='ar'] body {
+    font-family: theme('fontFamily.arabic');
+    line-height: 1.8;
+  }
+
+  /*
+   * A single, visible focus ring for every focusable element (Doc 03
+   * NFR-ACC-002). `:focus-visible` keeps it off mouse clicks but always
+   * present for keyboard users. Components must not remove it.
+   */
+  :focus-visible {
+    outline: 2px solid theme('colors.brand.700');
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+
+  /*
+   * Nothing on the public site may cause sideways scrolling on a 390px
+   * viewport. Constraining the root elements makes an overflowing child
+   * visible in testing instead of silently widening the page.
+   */
+  html,
+  body {
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+}
+
+@layer components {
+  /*
+   * Skip link — visually hidden until focused, then pinned to the top of the
+   * viewport. Keyboard users reach the main content without tabbing the whole
+   * navigation on every page (Doc 03 NFR-ACC-002).
+   */
+  .skip-link {
+    @apply absolute start-4 top-4 z-50 -translate-y-24 rounded-control bg-ink-900 px-4 py-2 text-body-sm font-medium text-white transition-transform;
+  }
+
+  .skip-link:focus {
+    @apply translate-y-0;
   }
 }
 
 /*
- * Doc 23 REL-M2-T03 requires every animation added later to respect this.
- * Declaring it now means the rule is in place before the first animation.
+ * Doc 23 REL-M2-T03 and Doc 03 NFR-ACC-005: every animation added to this
+ * application must respect this query. Declared globally so the guarantee does
+ * not depend on any individual component remembering it.
+ *
+ * This block is load-bearing. Do not remove it.
  */
 @media (prefers-reduced-motion: reduce) {
   *,

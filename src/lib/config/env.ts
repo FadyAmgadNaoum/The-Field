@@ -89,6 +89,29 @@ export const serverEnvSchema = databaseEnvSchema
       invalid_type_error: "STORAGE_PROVIDER must be 's3' or 'local'",
     }),
 
+    // Object storage credentials (Doc 12 §2, Doc 22 §9.3, Doc 24 §H.1).
+    //
+    // Deliberately OPTIONAL here rather than conditionally required when
+    // STORAGE_PROVIDER is 's3'. Doc 22 M0-T07 fixes the startup-required set at
+    // VENUE_ID, SESSION_SECRET, DATABASE_URL, STORAGE_PROVIDER and
+    // BOOKING_EXPIRY_MINUTES, and Milestone 0 has a test asserting exactly that
+    // list. Widening it would change a Milestone 0 contract from Milestone 2.
+    // Instead the S3 backend validates its own configuration on first use and
+    // raises a controlled error naming the missing variables — the same pattern
+    // the Google credentials already use (see `googleConfig.isConfigured`).
+    S3_REGION: z.string().optional(),
+    S3_ENDPOINT: z.string().optional(),
+    S3_ACCESS_KEY_ID: z.string().optional(),
+    S3_SECRET_ACCESS_KEY: z.string().optional(),
+    S3_PRIVATE_BUCKET: z.string().optional(),
+    S3_PUBLIC_BUCKET: z.string().optional(),
+    S3_PUBLIC_BASE_URL: z.string().optional(),
+
+    // Local disk fallback — development only, never staging or production
+    // (Doc 24 §H.1). Defaults keep `npm run dev` working with no extra setup.
+    LOCAL_STORAGE_PATH: z.string().optional(),
+    LOCAL_STORAGE_PUBLIC_URL: z.string().optional(),
+
     // OBD-002 — unresolved. No default, on any environment.
     BOOKING_EXPIRY_MINUTES: positiveInt('BOOKING_EXPIRY_MINUTES'),
     BOOKING_EXPIRY_JOB_INTERVAL_MINUTES: optionalPositiveInt(

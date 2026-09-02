@@ -85,9 +85,45 @@ export const bookingConfig = {
   },
 }
 
+/**
+ * Storage configuration (Doc 12 §2, Doc 24 §H.1).
+ *
+ * The credentials are optional in the schema — see the note in env.ts — so the
+ * accessors return `undefined` rather than throwing. The S3 backend checks them
+ * on first use and reports exactly which are missing.
+ */
 export const storageConfig = {
   get provider(): 's3' | 'local' {
     return getEnv().STORAGE_PROVIDER
+  },
+  get s3(): {
+    region: string
+    endpoint: string | undefined
+    accessKeyId: string | undefined
+    secretAccessKey: string | undefined
+    privateBucket: string | undefined
+    publicBucket: string | undefined
+    publicBaseUrl: string | undefined
+  } {
+    const env = getEnv()
+    return {
+      // Cloudflare R2 ignores the region but the SDK requires one; 'auto' is
+      // the value R2's own documentation specifies.
+      region: env.S3_REGION ?? 'auto',
+      endpoint: env.S3_ENDPOINT,
+      accessKeyId: env.S3_ACCESS_KEY_ID,
+      secretAccessKey: env.S3_SECRET_ACCESS_KEY,
+      privateBucket: env.S3_PRIVATE_BUCKET,
+      publicBucket: env.S3_PUBLIC_BUCKET,
+      publicBaseUrl: env.S3_PUBLIC_BASE_URL,
+    }
+  },
+  get local(): { path: string; publicUrl: string } {
+    const env = getEnv()
+    return {
+      path: env.LOCAL_STORAGE_PATH ?? './storage',
+      publicUrl: env.LOCAL_STORAGE_PUBLIC_URL ?? '/media',
+    }
   },
 }
 
